@@ -2,8 +2,7 @@
 
 
 def test_function():
-    return 'hey'
-
+    print('hey')
 
 if __name__ == '__main__':
     test_function()
