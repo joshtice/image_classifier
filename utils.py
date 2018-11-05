@@ -200,8 +200,7 @@ def load_data(data_dir):
     return data_loaders
 
 
-
-def preprocess(image_path):
+def preprocess_image(image_path):
     '''
     Scales, crops, and normalizes a PIL image for a PyTorch model
 
@@ -220,15 +219,15 @@ def preprocess(image_path):
 
     # Scale image
     scaling_factor = 256 / min(image.size)
-    scaled_size = (int(image.size[0]*scaling_factor),
-                   int(image.size[1]*scaling_factor))
+    scaled_size = (int(image.size[0] * scaling_factor),
+                   int(image.size[1] * scaling_factor))
     image = image.resize(scaled_size, Image.ANTIALIAS)
 
     # Crop image
-    box = ((int(image.size[1]/2 - 112),
-            int(image.size[0]/2 - 112),
-            int(image.size[1]/2 + 112),
-            int(image.size[0]/2 + 112),))
+    box = ((int(image.size[1] / 2 - 112),
+            int(image.size[0] / 2 - 112),
+            int(image.size[1] / 2 + 112),
+            int(image.size[0] / 2 + 112),))
     image = image.crop(box)
 
     # Normalize image
