@@ -41,7 +41,7 @@ import torch
 from torch import nn
 from torch import optim
 import torch.nn.functional as F
-from torchvision import transforms, models
+from torchvision import datasets, models, transforms
 
 
 class Classifier(nn.Module):
