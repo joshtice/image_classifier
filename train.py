@@ -96,6 +96,12 @@ def parse_args(defaults=DEFAULTS):
                         help="train model using gpu")
     args = parser.parse_args()
 
+    if args.save_dir:
+        if not os.path.isdir(args.save_dir):
+            raise ValueError("Please enter a valid save directory")
+    else:
+        args.save_dir = defaults['save_dir']
+
     if args.arch is None:
         args.arch = 'vgg16'
 
