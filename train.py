@@ -67,7 +67,7 @@ DEFAULTS = {
 }
 
 
-def parse_args(defauts=DEFAULTS):
+def parse_args(defaults=DEFAULTS):
     """
     Parse arguments from the command line
 
