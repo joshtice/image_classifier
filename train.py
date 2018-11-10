@@ -176,9 +176,11 @@ def train_model():
     """
 
     # Parse arguments
+    print("parsing arguments...")
     args = parse_args()
 
     # Build model architecture
+    print("building model...")
     model = utils.build_model(
         base_model=args.arch,
         input_size=25088,
@@ -187,10 +189,12 @@ def train_model():
         drop_p=args.dropout)
 
     # Send model to gpu/cpu
+    print("sending model to device...")
     device = torch.device("cuda:0" if args.gpu else "cpu")
     model.to(device)
 
     # Load data
+    print("loading data...")
     data = utils.load_data(args.data_directory)
     training_loader = data['training_loader']
     validation_loader = data['validation_loader']
@@ -198,6 +202,7 @@ def train_model():
     model.class_to_index = data['class_to_index']
 
     # Train classifier
+    print("training model...")
     criterion = nn.NLLLoss()
     optimizer = optim.Adam(model.classifier.parameters(), lr=args.learning_rate)
     print_every = 40
@@ -235,6 +240,7 @@ def train_model():
           "Test Accuracy: {:.3f}".format(test_accuracy / len(testing_loader)))
 
     # Save checkpoint
+    print("saving checkpoint...")
     checkpoint = {
         'model': args.arch,
         'classifier_input_size': 25088,
@@ -250,6 +256,7 @@ def train_model():
     }
 
     torch.save(checkpoint, args.save_dir)
+    print("DONE!!!")
 
 
 if __name__ == '__main__':
