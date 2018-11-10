@@ -189,8 +189,8 @@ def train_model():
         drop_p=args.dropout)
 
     # Send model to gpu/cpu
-    print("sending model to device...")
     device = torch.device("cuda:0" if args.gpu else "cpu")
+    print("sending model to device {}...".format(device))
     model.to(device)
 
     # Load data
@@ -213,6 +213,7 @@ def train_model():
         model.train()
         for inputs, labels in iter(training_loader):
             steps += 1
+            print("step number {}...".format(step))
             optimizer.zero_grad()
             inputs, labels = inputs.to(device), labels.to(device)
             outputs = model.forward(inputs)
