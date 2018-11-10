@@ -1,9 +1,37 @@
 #!/usr/bin/env python3
 
+
+"""
+Name:   utils.py
+Author: Joshua Tice
+Date:   November 10, 2018
+
+Description
+-----------
+This file contains classes and fuctions that support both  train.py and predict.py,
+including:
+
+Classifier          Class used for instantiating the fully-connected classifier
+                    portion of the neural network model
+build_model         Function that handles the contruction of a neural network
+load_checkpoint     Function that contructs a neural network from a checkpoint
+load_data           Function that creates an interface for training, validation,
+                    and testing data
+preprocess_image    Function for processing an image such that it can be
+                    classified by the neural network
+
+Required packages
+-----------------
+numpy
+skimage
+torch
+torchvision
+utils.py
+"""
+
+
 import json
-import matplotlib.pyplot as plt
 import numpy as np
-import os
 from PIL import Image
 import skimage
 import skimage.io
@@ -124,12 +152,12 @@ def load_checkpoint(filepath):
     """
 
     checkpoint = torch.load(filepath)
-    model = checkpoint['model']
-    model.classifier = Classifier(
-        checkpoint['classifier_input_size'],
-        checkpoint['classifier_output_size'],
-        checkpoint['classifier_hidden_layers'],
-        checkpoint['classifier_dropout'])
+    model = build_model(
+        base_model=checkpoint['model'],
+        input_size=checkpoint['classifier_input_size'],
+        output_size=checkpoint['classifier_output_size'],
+        hidden_layers=checkpoint['classifier_hidden_layers'],
+        drop_p=checkpoint['classifier_dropout'])
     model.load_state_dict(checkpoint['model_state_dict'])
     model.class_to_index = checkpoint['class_to_index']
 
@@ -148,7 +176,8 @@ def load_data(data_dir):
     Returns
     -------
         dict
-            Dictionary with training, validation, and testing data loaders
+            Dictionary with training, validation, and testing data loaders in
+            addition to dictionary with class to index relationship
     """
     training_dir = data_dir + '/train'
     validation_dir = data_dir + '/valid'
@@ -191,13 +220,14 @@ def load_data(data_dir):
     testing_loader = torch.utils.data.DataLoader(
         testing_data, batch_size=32)
 
-    data_loaders = {
+    data = {
         'training_loader': training_loader,
         'validation_loader': validation_loader,
         'testing_loader': testing_loader,
+        'class_to_index': training_data.class_to_idx
     }
 
-    return data_loaders
+    return data
 
 
 def preprocess_image(image_path):

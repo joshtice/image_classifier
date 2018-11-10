@@ -1,7 +1,38 @@
 #!/usr/bin/env python3
 
+
+"""
+Name:   predict.py
+Author: Joshua Tice
+Date:   November 10, 2018
+
+Description
+-----------
+This script takes an image of a flower and makes a prediction of the flower's
+class. The script reqires a checkpoint that defines the architecture of a
+convolutional neural network.
+
+Usage
+-----
+Basic usage:
+python predict.py image_path checkpoint
+
+Options:
+--top_k             Top number of predictions to output
+--category_names    File to convert predictions to human-readable form
+--gpu               Whether or not to use gpu for inference
+
+Required packages
+-----------------
+numpy
+skimage
+torch
+torchvision
+utils.py
+"""
+
+
 import argparse
-import utils
 import json
 import numpy as np
 from PIL import Image
@@ -14,6 +45,7 @@ from torch import nn
 from torch import optim
 import torch.nn.functional as F
 from torchvision import transforms, models
+import utils
 
 
 def parse_args():
