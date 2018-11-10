@@ -226,7 +226,7 @@ def train_model():
             if steps % print_every == 0:
                 validation_loss, accuracy = validate(
                     model, device, validation_loader, criterion)
-                print("Epoch: {}/{}.. ".format(epoch + 1, epochs),
+                print("Epoch: {}/{}.. ".format(epoch + 1, args.epochs),
                       "Training Loss: {:.3f}.. ".format(
                     running_loss / print_every),
                     "Validation Loss: {:.3f}.. ".format(
