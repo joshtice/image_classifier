@@ -3,9 +3,7 @@
 import argparse
 import utils
 import json
-import matplotlib.pyplot as plt
 import numpy as np
-import os
 from PIL import Image
 import skimage
 import skimage.io
@@ -31,11 +29,14 @@ def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('image_path', help="path to image to be categorized by model")
     parser.add_argument('checkpoint', help="model checkpoint to use for prediction")
-    parser.add_argument('--top_k', type=int, default=1,
+    parser.add_argument('--top_k', type=int,
                         help="number of top predictions to show")
     parser.add_argument('--category_names', help="file for interpreting output")
     parser.add_argument('--gpu', action='store_true', help="run inference with gpu")
     args = parser.parse_args()
+
+    if args.top_k and args.top_k < 0:
+        raise ValueError("top_k must be greater than 0")
 
     return args
 
@@ -101,10 +102,6 @@ def translate_classes(classes, json_file):
 
 
 def main():
-    """
-    Main script method
-    """
-
     args = parse_args()
     device = torch.device(
         "cuda:0" if (args.gpu and torch.cuda.is_available()) else "cpu")
@@ -114,8 +111,8 @@ def main():
         classes = translate_classes(classes, args.category_names)
 
     print("Top predictions:")
-    for class, prob in zip(classes, probs):
-        print("{} {}".format(class, prob))
+    for name, prob in zip(classes, probs):
+        print("{} {}".format(name, prob))
 
 
 if __name__ == '__main__':
