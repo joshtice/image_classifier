@@ -213,7 +213,7 @@ def train_model():
         model.train()
         for inputs, labels in iter(training_loader):
             steps += 1
-            print("step number {}...".format(step))
+            print("step number {}...".format(steps))
             optimizer.zero_grad()
             inputs, labels = inputs.to(device), labels.to(device)
             outputs = model.forward(inputs)
