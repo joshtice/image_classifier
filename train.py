@@ -98,6 +98,7 @@ def parse_args(defaults=DEFAULTS):
 
     if args.save_dir:
         if not os.path.isdir(args.save_dir):
+            print("save path not valid")
             raise ValueError("Please enter a valid save directory")
     else:
         args.save_dir = defaults['save_dir']
