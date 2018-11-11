@@ -41,6 +41,7 @@ utils.py
 
 
 import argparse
+import datetime
 import json
 import numpy as np
 import os
@@ -263,6 +264,8 @@ def train_model():
         # 'optimizer_state_dict': optimizer.state_dict(),
     }
 
+    checkpoint_name = "{}_checkpoint.pth".format(
+        datetime.datetime.now().strftime('%Y-%m-%d'))
     torch.save(checkpoint, args.save_dir)
     print("DONE!!!")
 
