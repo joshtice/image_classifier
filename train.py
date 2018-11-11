@@ -266,7 +266,8 @@ def train_model():
 
     checkpoint_name = "{}_checkpoint.pth".format(
         datetime.datetime.now().strftime('%Y-%m-%d'))
-    torch.save(checkpoint, args.save_dir)
+    checkpoint_path = os.path.join(args.save_dir, checkpoint_name)
+    torch.save(checkpoint, checkpoint_path)
     print("DONE!!!")
 
 
