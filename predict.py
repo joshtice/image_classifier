@@ -67,8 +67,11 @@ def parse_args():
     parser.add_argument('--gpu', action='store_true', help="run inference with gpu")
     args = parser.parse_args()
 
-    if args.top_k and args.top_k < 0:
-        raise ValueError("top_k must be greater than 0")
+    if args.top_k is not None:
+        if args.top_k < 0:
+            raise ValueError("top_k must be greater than 0")
+    else:
+        args.top_k = 1
 
     return args
 
@@ -134,6 +137,7 @@ def translate_classes(classes, json_file):
 
 
 def main():
+    print("parsing arguments...")
     args = parse_args()
     device = torch.device(
         "cuda:0" if (args.gpu and torch.cuda.is_available()) else "cpu")
