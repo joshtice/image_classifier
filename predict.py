@@ -65,12 +65,16 @@ def parse_args():
     """
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('image_path', help="path to image to be categorized by model")
-    parser.add_argument('checkpoint', help="model checkpoint to use for prediction")
+    parser.add_argument('image_path', 
+        help="path to image to be categorized by model")
+    parser.add_argument('checkpoint', 
+        help="model checkpoint to use for prediction")
     parser.add_argument('--top_k', type=int,
-                        help="number of top predictions to show")
-    parser.add_argument('--category_names', help="file for interpreting output")
-    parser.add_argument('--gpu', action='store_true', help="run inference with gpu")
+        help="number of top predictions to show")
+    parser.add_argument('--category_names', 
+        help="file for interpreting output")
+    parser.add_argument('--gpu', action='store_true', 
+        ls ahelp="run inference with gpu")
     args = parser.parse_args()
 
     if args.top_k is not None:
@@ -96,8 +100,8 @@ def predict(image_path, model, topk=1, device='cpu'):
     top_k : int, optional
         Number of top categories to print for prediction
     device : str
-        Indicates whether to run inference using cpu or gpu. Allowed values:
-        {'cpu', 'gpu'}
+        Indicates whether to run inference using cpu or gpu. 
+        Allowed values: {'cpu', 'gpu'}
     '''
 
     model.to(device)
@@ -152,7 +156,8 @@ def main():
     model = utils.load_checkpoint(args.checkpoint)
 
     print("running prediction...")
-    probs, classes = predict(args.image_path, model, topk=args.top_k, device=device)
+    probs, classes = predict(args.image_path, model, 
+                             topk=args.top_k, device=device)
     print(probs, classes)
 
     if args.category_names is not None:
@@ -160,8 +165,12 @@ def main():
         classes = translate_classes(classes, args.category_names)
 
     print("Top predictions:")
+    print("Class    Probability")
+    print("-----    -----------")
+    if istype(probs, float):
+        print("{:<9d}{:<11.3f}".format(classes, probs))
     for name, prob in zip(classes, probs):
-        print("{} {}".format(name, prob))
+        print("{:<9d}{:<11.3f}".format(classes, probs))
 
 
 if __name__ == '__main__':
