@@ -29,6 +29,12 @@ skimage
 torch
 torchvision
 utils.py
+
+To do
+-----
+- Fix gpu issue
+- Add some logging for troubleshooting
+- the name function isn't working
 """
 
 
@@ -139,11 +145,18 @@ def translate_classes(classes, json_file):
 def main():
     print("parsing arguments...")
     args = parse_args()
+
     device = torch.device(
         "cuda:0" if (args.gpu and torch.cuda.is_available()) else "cpu")
+    print("loading model on device {}".format(device))
     model = utils.load_checkpoint(args.checkpoint)
+
+    print("running prediction...")
     probs, classes = predict(args.image_path, model, topk=args.top_k, device=device)
+    print(probs, classes)
+
     if args.category_names is not None:
+        print("translating results...")
         classes = translate_classes(classes, args.category_names)
 
     print("Top predictions:")
