@@ -74,7 +74,7 @@ def parse_args():
     parser.add_argument('--category_names', 
         help="file for interpreting output")
     parser.add_argument('--gpu', action='store_true', 
-        ls ahelp="run inference with gpu")
+        help="run inference with gpu")
     args = parser.parse_args()
 
     if args.top_k is not None:
