@@ -41,6 +41,7 @@ To do
 import argparse
 import json
 import numpy as np
+import os
 from PIL import Image
 import skimage
 import skimage.io
@@ -89,7 +90,7 @@ def parse_args():
     else:
         args.top_k = 1
 
-    if ((args.category_names is not none) and 
+    if ((args.category_names is not None) and 
        (not os.path.isfile(args.category_names))):
         raise ValueError("category_names does not exist")
 
@@ -162,13 +163,12 @@ def main():
 
     device = torch.device(
         "cuda:0" if (args.gpu and torch.cuda.is_available()) else "cpu")
-    print("loading model on device {}".format(device))
+    print("loading model on device {}...".format(device))
     model = utils.load_checkpoint(args.checkpoint)
 
     print("running prediction...")
     probs, classes = predict(args.image_path, model, 
                              topk=args.top_k, device=device)
-    print(probs, classes)
 
     if args.category_names is not None:
         print("translating results...")
@@ -177,10 +177,8 @@ def main():
     print("Top predictions:")
     print("Class    Probability")
     print("-----    -----------")
-    if isinstance(probs, float):
-        print("{:<9d}{:<11.3f}".format(classes, probs))
-    for name, prob in zip(classes, probs):
-        print("{:<9d}{:<11.3f}".format(classes, probs))
+    for name, prob in zip(list(classes), list(probs)):
+        print("{:<9d}{:<11.3f}".format(name, prob))
 
 
 if __name__ == '__main__':
