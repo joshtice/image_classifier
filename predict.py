@@ -77,11 +77,21 @@ def parse_args():
         help="run inference with gpu")
     args = parser.parse_args()
 
+    if not os.path.isfile(args.image_path):
+        raise ValueError("image_path does not exist")
+
+    if not os.path.isfile(args.checkpoint):
+        raise ValueError("checkpoint does not exist")
+
     if args.top_k is not None:
         if args.top_k < 0:
             raise ValueError("top_k must be greater than 0")
     else:
         args.top_k = 1
+
+    if ((args.category_names is not none) and 
+       (not os.path.isfile(args.category_names))):
+        raise ValueError("category_names does not exist")
 
     return args
 
@@ -167,7 +177,7 @@ def main():
     print("Top predictions:")
     print("Class    Probability")
     print("-----    -----------")
-    if istype(probs, float):
+    if isinstance(probs, float):
         print("{:<9d}{:<11.3f}".format(classes, probs))
     for name, prob in zip(classes, probs):
         print("{:<9d}{:<11.3f}".format(classes, probs))
