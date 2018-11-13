@@ -85,8 +85,8 @@ def parse_args():
         raise ValueError("checkpoint does not exist")
 
     if args.top_k is not None:
-        if args.top_k < 0:
-            raise ValueError("top_k must be greater than 0")
+        if (args.top_k < 0) or (args.top_k > 102):
+            raise ValueError("top_k must be between 0 and 102")
     else:
         args.top_k = 1
 
@@ -120,8 +120,9 @@ def predict(image_path, model, topk=1, device='cpu'):
     with torch.no_grad():
         image = utils.preprocess_image(image_path)
         image = np.expand_dims(image, axis=0)
-        image = torch.tensor(image).float()
-        image.to(device)
+        image = torch.tensor(image, device=device).float()
+#         print("device: {}".format(device))
+#         print("image type: {}".format(image.get_device()))
         pred = model.forward(image)
         probs, classes = pred.topk(topk)
         probs = torch.exp(probs)
@@ -164,6 +165,7 @@ def main():
     device = torch.device(
         "cuda:0" if (args.gpu and torch.cuda.is_available()) else "cpu")
     print("loading model on device {}...".format(device))
+    print(type(device))
     model = utils.load_checkpoint(args.checkpoint)
 
     print("running prediction...")
@@ -175,10 +177,10 @@ def main():
         classes = translate_classes(classes, args.category_names)
 
     print("Top predictions:")
-    print("Class    Probability")
-    print("-----    -----------")
+    print("Class                    Probability")
+    print("-----                    -----------")
     for name, prob in zip(list(classes), list(probs)):
-        print("{:<9d}{:<11.3f}".format(name, prob))
+        print("{:<25}{:<11.3f}".format(name, prob))
 
 
 if __name__ == '__main__':
