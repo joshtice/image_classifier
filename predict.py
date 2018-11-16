@@ -66,16 +66,16 @@ def parse_args():
     """
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('image_path', 
-        help="path to image to be categorized by model")
-    parser.add_argument('checkpoint', 
-        help="model checkpoint to use for prediction")
+    parser.add_argument('image_path',
+                        help="path to image to be categorized by model")
+    parser.add_argument('checkpoint',
+                        help="model checkpoint to use for prediction")
     parser.add_argument('--top_k', type=int,
-        help="number of top predictions to show")
-    parser.add_argument('--category_names', 
-        help="file for interpreting output")
-    parser.add_argument('--gpu', action='store_true', 
-        help="run inference with gpu")
+                        help="number of top predictions to show")
+    parser.add_argument('--category_names',
+                        help="file for interpreting output")
+    parser.add_argument('--gpu', action='store_true',
+                        help="run inference with gpu")
     args = parser.parse_args()
 
     if not os.path.isfile(args.image_path):
@@ -90,8 +90,8 @@ def parse_args():
     else:
         args.top_k = 1
 
-    if ((args.category_names is not None) and 
-       (not os.path.isfile(args.category_names))):
+    if ((args.category_names is not None) and
+            (not os.path.isfile(args.category_names))):
         raise ValueError("category_names does not exist")
 
     return args
@@ -111,7 +111,7 @@ def predict(image_path, model, topk=1, device='cpu'):
     top_k : int, optional
         Number of top categories to print for prediction
     device : str
-        Indicates whether to run inference using cpu or gpu. 
+        Indicates whether to run inference using cpu or gpu.
         Allowed values: {'cpu', 'gpu'}
     '''
 
@@ -165,11 +165,10 @@ def main():
     device = torch.device(
         "cuda:0" if (args.gpu and torch.cuda.is_available()) else "cpu")
     print("loading model on device {}...".format(device))
-    print(type(device))
-    model = utils.load_checkpoint(args.checkpoint)
+    model = utils.load_checkpoint(args.checkpoint, device)
 
     print("running prediction...")
-    probs, classes = predict(args.image_path, model, 
+    probs, classes = predict(args.image_path, model,
                              topk=args.top_k, device=device)
 
     if args.category_names is not None:

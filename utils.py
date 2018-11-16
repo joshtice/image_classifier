@@ -135,7 +135,7 @@ def build_model(base_model='vgg16', input_size=25088, output_size=102,
     return model
 
 
-def load_checkpoint(filepath):
+def load_checkpoint(filepath, device='cpu'):
     """
     Instantiates and configures a torch neural network based on the parameters
     of a given checkpoint.
@@ -151,7 +151,7 @@ def load_checkpoint(filepath):
         Instantiated network configured with checkpoint parameters
     """
 
-    checkpoint = torch.load(filepath)
+    checkpoint = torch.load(filepath, map_location=device)
     model = build_model(
         base_model=checkpoint['model'],
         input_size=checkpoint['classifier_input_size'],
@@ -160,6 +160,7 @@ def load_checkpoint(filepath):
         drop_p=checkpoint['classifier_dropout'])
     model.load_state_dict(checkpoint['model_state_dict'])
     model.class_to_index = checkpoint['class_to_index']
+    model.to(device)
 
     return model
 
