@@ -160,7 +160,7 @@ def load_checkpoint(filepath, device='cpu'):
         drop_p=checkpoint['classifier_dropout'])
     model.load_state_dict(checkpoint['model_state_dict'])
     model.class_to_index = checkpoint['class_to_index']
-    model.to(device)
+    model.to(torch.device(device))
 
     return model
 

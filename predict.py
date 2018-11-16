@@ -162,8 +162,10 @@ def main():
     print("parsing arguments...")
     args = parse_args()
 
-    device = torch.device(
-        "cuda:0" if (args.gpu and torch.cuda.is_available()) else "cpu")
+    if args.gpu:
+        device = "cuda:0"
+    else:
+        device = "cpu"
     print("loading model on device {}...".format(device))
     model = utils.load_checkpoint(args.checkpoint, device)
 
