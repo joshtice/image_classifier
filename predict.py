@@ -156,7 +156,7 @@ def translate_classes(classes, json_file):
         category_mapper = json.load(f)
     classes = list(map(str, classes))
     names = list(map(category_mapper.get, classes))
-    names = [x if x is not None else 'name not available' for x in names ]
+    names = [x if x is not None else 'name not available' for x in names]
 
     return names
 
