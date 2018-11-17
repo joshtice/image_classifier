@@ -32,6 +32,7 @@ utils.py
 
 import json
 import numpy as np
+import pprint
 from PIL import Image
 import skimage
 import skimage.io
