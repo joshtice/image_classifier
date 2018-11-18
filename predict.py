@@ -85,8 +85,13 @@ def parse_args():
         raise ValueError("checkpoint does not exist")
 
     if args.top_k is not None:
+<<<<<<< HEAD
         if (args.top_k < 0) or (args.top_k > 102):
             raise ValueError("top_k must be between 0 and 102")
+=======
+        if args.top_k < 1:
+            raise ValueError("top_k must be greater than 0")
+>>>>>>> fix
     else:
         args.top_k = 1
 
@@ -120,18 +125,19 @@ def predict(image_path, model, topk=1, device='cpu'):
     with torch.no_grad():
         image = utils.preprocess_image(image_path)
         image = np.expand_dims(image, axis=0)
-        image = torch.tensor(image, device=device).float()
-#         print("device: {}".format(device))
-#         print("image type: {}".format(image.get_device()))
+        image = torch.tensor(image).float()
+        image = image.to(device)
         pred = model.forward(image)
         probs, classes = pred.topk(topk)
         probs = torch.exp(probs)
-    probs = probs.numpy()
-    classes = classes.numpy()
+#     print(probs)
+#     print(classes)
+    probs = probs.to('cpu').numpy().tolist()[0]
+    classes = classes.to('cpu').numpy().tolist()[0]
     for key, value in model.class_to_index.items():
-        classes[classes == value] = key
+        classes[classes == value] = int(key)
 
-    return probs.squeeze(), classes.squeeze()
+    return probs, classes
 
 
 def translate_classes(classes, json_file):
@@ -153,7 +159,9 @@ def translate_classes(classes, json_file):
 
     with open(json_file, 'r') as f:
         category_mapper = json.load(f)
-    names = list(map(category_mapper.get, list(classes.astype(str))))
+    classes = list(map(str, classes))
+    names = list(map(category_mapper.get, classes))
+    names = [x if x is not None else 'name not available' for x in names]
 
     return names
 
@@ -172,15 +180,15 @@ def main():
     print("running prediction...")
     probs, classes = predict(args.image_path, model,
                              topk=args.top_k, device=device)
-
+    
     if args.category_names is not None:
         print("translating results...")
         classes = translate_classes(classes, args.category_names)
-
+        
     print("Top predictions:")
     print("Class                    Probability")
     print("-----                    -----------")
-    for name, prob in zip(list(classes), list(probs)):
+    for name, prob in zip(classes, probs):
         print("{:<25}{:<11.3f}".format(name, prob))
 
 
