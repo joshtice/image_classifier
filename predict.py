@@ -85,13 +85,8 @@ def parse_args():
         raise ValueError("checkpoint does not exist")
 
     if args.top_k is not None:
-<<<<<<< HEAD
-        if (args.top_k < 0) or (args.top_k > 102):
-            raise ValueError("top_k must be between 0 and 102")
-=======
         if args.top_k < 1:
             raise ValueError("top_k must be greater than 0")
->>>>>>> fix
     else:
         args.top_k = 1
 
