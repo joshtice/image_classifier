@@ -4,12 +4,12 @@
 """
 Name:   utils.py
 Author: Joshua Tice
-Date:   November 10, 2018
+Date:   November 18, 2018
 
 Description
 -----------
-This file contains classes and fuctions that support both  train.py and predict.py,
-including:
+This file contains classes and fuctions that support both train.py and
+predict.py, including:
 
 Classifier          Class used for instantiating the fully-connected classifier
                     portion of the neural network model
@@ -145,6 +145,8 @@ def load_checkpoint(filepath, device='cpu'):
     ----------
     filepath : str
         File path to a saved checkpoint
+    device : str
+        Device on which to load the model {'cpu', 'cuda:0'}
 
     Returns
     -------

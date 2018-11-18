@@ -3,7 +3,7 @@
 """
 Name:   train.py
 Author: Joshua Tice
-Date:   November 10, 2018
+Date:   November 18, 2018
 
 Description
 -----------

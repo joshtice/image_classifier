@@ -4,13 +4,13 @@
 """
 Name:   predict.py
 Author: Joshua Tice
-Date:   November 10, 2018
+Date:   November 18, 2018
 
 Description
 -----------
-This script takes an image of a flower and makes a prediction of the flower's
-class. The script reqires a checkpoint that defines the architecture of a
-convolutional neural network.
+This script takes an image of a flower and makes a prediction of the
+flower's class. The script reqires a checkpoint that defines the
+architecture of a convolutional neural network.
 
 Usage
 -----
@@ -29,12 +29,6 @@ skimage
 torch
 torchvision
 utils.py
-
-To do
------
-- Fix gpu issue
-- Add some logging for troubleshooting
-- the name function isn't working
 """
 
 
@@ -110,9 +104,15 @@ def predict(image_path, model, topk=1, device='cpu'):
         Neural network used for prediction
     top_k : int, optional
         Number of top categories to print for prediction
-    device : str
+    device : str, optional
         Indicates whether to run inference using cpu or gpu.
         Allowed values: {'cpu', 'gpu'}
+
+    Returns
+    -------
+    tuple of lists
+        list of top_k classes and a list of the classes' associated
+        probabilities
     '''
 
     model.to(device)
@@ -125,8 +125,7 @@ def predict(image_path, model, topk=1, device='cpu'):
         pred = model.forward(image)
         probs, classes = pred.topk(topk)
         probs = torch.exp(probs)
-#     print(probs)
-#     print(classes)
+
     probs = probs.to('cpu').numpy().tolist()[0]
     classes = classes.to('cpu').numpy().tolist()[0]
     for key, value in model.class_to_index.items():
@@ -162,9 +161,11 @@ def translate_classes(classes, json_file):
 
 
 def main():
+    # Parse argments from command line
     print("parsing arguments...")
     args = parse_args()
 
+    # Load the model and send it to the desired processor
     if args.gpu:
         device = "cuda:0"
     else:
@@ -172,14 +173,17 @@ def main():
     print("loading model on device {}...".format(device))
     model = utils.load_checkpoint(args.checkpoint, device)
 
+    # Generate prediction
     print("running prediction...")
     probs, classes = predict(args.image_path, model,
                              topk=args.top_k, device=device)
-    
+
+    # Translate classes to human-readable form
     if args.category_names is not None:
         print("translating results...")
         classes = translate_classes(classes, args.category_names)
-        
+
+    # Print top predictions
     print("Top predictions:")
     print("Class                    Probability")
     print("-----                    -----------")
